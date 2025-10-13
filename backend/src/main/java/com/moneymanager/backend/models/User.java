@@ -4,7 +4,6 @@ import com.moneymanager.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -45,7 +44,7 @@ public class User {
     private Role role;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = false;
 
     @Column(name = "activation_token")
     private String activationToken;
