@@ -35,3 +35,5 @@ build/
 ### environment files ###
 .env
 .env.local
+
+repomix-output.xml
