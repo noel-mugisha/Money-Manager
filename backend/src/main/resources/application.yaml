@@ -1,0 +1,12 @@
+# Application properties
+spring:
+  application:
+    name: backend
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
