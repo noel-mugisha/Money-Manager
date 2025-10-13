@@ -8,7 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -34,19 +34,18 @@ public class User {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ColumnDefault("false")
     @Column(name = "is_active")
-    private Boolean isActive = false;
+    private Boolean isActive;
 
     @Column(name = "activation_token")
     private String activationToken;
