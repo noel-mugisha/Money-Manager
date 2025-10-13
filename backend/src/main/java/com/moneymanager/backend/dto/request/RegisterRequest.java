@@ -1,6 +1,7 @@
 package com.moneymanager.backend.dto.request;
 
 import com.moneymanager.backend.validation.LowerCase;
+import com.moneymanager.backend.validation.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -12,5 +13,6 @@ public record RegisterRequest(
         @LowerCase(message = "Email must be lowercase")
         String email,
         @NotBlank(message = "Password is required")
+        @Password
         String password
 ) {}
