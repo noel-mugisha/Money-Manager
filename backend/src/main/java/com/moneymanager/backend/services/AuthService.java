@@ -3,6 +3,7 @@ package com.moneymanager.backend.services;
 import com.moneymanager.backend.dto.request.RegisterRequest;
 import com.moneymanager.backend.enums.Role;
 import com.moneymanager.backend.exceptions.DuplicateEmailException;
+import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.UserMapper;
 import com.moneymanager.backend.models.User;
 import com.moneymanager.backend.repositories.UserRepository;
@@ -45,10 +46,20 @@ public class AuthService {
         return userRepository.save(user);
     }
 
+    // helper method to send activation email
     private void sendActivationEmail(String email, String activationToken) {
         String subject = "Activate your Money Manager account";
-        String activationUrl = frotendUrl + "/activate?token=" + activationToken;
+        String activationUrl = frotendUrl + "/api/v1/auth/activate?token=" + activationToken;
         String body = "Click on the following link to activate your Money Manager account: " + activationUrl;
         emailService.sendEmail(email, subject, body);
+    }
+
+    public void activateAccount(String token) {
+        var user = userRepository.findByActivationToken(token).orElseThrow(
+                () -> new ResourceNotFoundException("User this activation token not found "+ token)
+        );
+        user.setIsActive(true);
+        user.setActivationToken(null);
+        userRepository.save(user);
     }
 }

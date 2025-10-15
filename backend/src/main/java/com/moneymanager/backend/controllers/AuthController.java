@@ -6,10 +6,7 @@ import com.moneymanager.backend.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -34,4 +31,14 @@ public class AuthController {
         var message = new MessageResponse("User registered successfully, check email for account activation!");
         return ResponseEntity.created(uri).body(message);
     }
+
+    @GetMapping("/activate")
+    public ResponseEntity<MessageResponse> activateAccount(
+            @RequestParam String token
+    ) {
+        authService.activateAccount(token);
+        var message = new MessageResponse("Account activated successfully, You can now Login!");
+        return ResponseEntity.ok(message);
+    }
+
 }

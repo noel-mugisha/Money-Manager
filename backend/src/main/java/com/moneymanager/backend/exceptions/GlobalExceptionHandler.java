@@ -40,4 +40,25 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(errorResponse, status);
     }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiErrorResponse> duplicateEmail(
+            DuplicateEmailException exception
+    ) {
+        return getErrorResponse(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> resourceNotFound(
+            ResourceNotFoundException exception
+    ) {
+        return getErrorResponse(HttpStatus.NOT_FOUND, exception);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiErrorResponse> badRequest(
+            BadRequestException exception
+    ) {
+        return getErrorResponse(HttpStatus.BAD_REQUEST, exception);
+    }
 }
