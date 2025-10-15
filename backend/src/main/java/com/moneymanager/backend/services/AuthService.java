@@ -4,17 +4,20 @@ import com.moneymanager.backend.dto.request.AuthRequest;
 import com.moneymanager.backend.dto.request.RegisterRequest;
 import com.moneymanager.backend.dto.response.AuthResponse;
 import com.moneymanager.backend.enums.Role;
+import com.moneymanager.backend.exceptions.BadRequestException;
 import com.moneymanager.backend.exceptions.DuplicateEmailException;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.UserMapper;
 import com.moneymanager.backend.models.User;
 import com.moneymanager.backend.repositories.UserRepository;
+import com.moneymanager.backend.security.UserPrincipal;
 import com.moneymanager.backend.security.jwt.JwtService;
 import com.moneymanager.backend.utils.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,10 +74,12 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(AuthRequest request) {
+        var user = userRepository.findByEmail(request.email()).orElseThrow();
+        if (!user.getIsActive())
+            throw new BadRequestException("Verify our email address!");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
-        var user = userRepository.findByEmail(request.email()).orElseThrow();
         var accessToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         return new AuthResponse(accessToken, refreshToken);
