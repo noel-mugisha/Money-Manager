@@ -3,6 +3,7 @@ package com.moneymanager.backend.exceptions;
 import com.moneymanager.backend.dto.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,5 +61,12 @@ public class GlobalExceptionHandler {
             BadRequestException exception
     ) {
         return getErrorResponse(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> badCredentials(
+            BadCredentialsException exception
+    ) {
+        return getErrorResponse(HttpStatus.UNAUTHORIZED, exception);
     }
 }

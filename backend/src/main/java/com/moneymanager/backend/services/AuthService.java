@@ -1,15 +1,20 @@
 package com.moneymanager.backend.services;
 
+import com.moneymanager.backend.dto.request.AuthRequest;
 import com.moneymanager.backend.dto.request.RegisterRequest;
+import com.moneymanager.backend.dto.response.AuthResponse;
 import com.moneymanager.backend.enums.Role;
 import com.moneymanager.backend.exceptions.DuplicateEmailException;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.UserMapper;
 import com.moneymanager.backend.models.User;
 import com.moneymanager.backend.repositories.UserRepository;
+import com.moneymanager.backend.security.jwt.JwtService;
 import com.moneymanager.backend.utils.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +28,8 @@ public class AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     @Value("${app.frotend-url}")
     private String frotendUrl;
 
@@ -56,10 +63,28 @@ public class AuthService {
 
     public void activateAccount(String token) {
         var user = userRepository.findByActivationToken(token).orElseThrow(
-                () -> new ResourceNotFoundException("User this activation token not found "+ token)
+                () -> new ResourceNotFoundException("User this activation token not found " + token)
         );
         user.setIsActive(true);
         user.setActivationToken(null);
         userRepository.save(user);
+    }
+
+    public AuthResponse authenticate(AuthRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+        );
+        var user = userRepository.findByEmail(request.email()).orElseThrow();
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        return new AuthResponse(accessToken, refreshToken);
+    }
+
+    public AuthResponse refreshTokens(String refreshToken) {
+        UUID id = jwtService.extractSubject(refreshToken);
+        var user = userRepository.findById(id).orElseThrow();
+        var accessToken = jwtService.generateAccessToken(user);
+        var newRefreshToken = jwtService.generateRefreshToken(user);
+        return new AuthResponse(accessToken, newRefreshToken);
     }
 }
