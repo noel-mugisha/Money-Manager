@@ -14,6 +14,23 @@ spring:
     accessTokenExpiration: 7200 # 2h
     refreshTokenExpiration: 604800 # 7d
 
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: ${BREVO_USERNAME}
+    password: ${BREVO_PASSWORD}
+    from: ${BREVO_FROM_EMAIL}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  frotend-url: ${FRONTEND_URL:http://localhost:8080}
+
 server:
   port: 8080
   servlet:
