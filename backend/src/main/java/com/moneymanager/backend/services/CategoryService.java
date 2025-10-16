@@ -2,11 +2,15 @@ package com.moneymanager.backend.services;
 
 import com.moneymanager.backend.dto.CategoryDto;
 import com.moneymanager.backend.exceptions.ResourceAlreadyExistsException;
+import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.CategoryMapper;
 import com.moneymanager.backend.repositories.CategoryRepository;
 import com.moneymanager.backend.utils.AuthenticationFacadeImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +30,35 @@ public class CategoryService {
         //save the category
         var savedCategory = categoryRepository.save(newCategory);
         return categoryMapper.toDto(savedCategory);
+    }
+
+    public List<CategoryDto> getCategoriesForCurrentUser() {
+        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var categories = categoryRepository.findByUserId(currentUser.getId());
+        return categories.stream().map(categoryMapper::toDto).toList();
+    }
+
+    public List<CategoryDto> getCategoriesByType(String type) {
+        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var categories = categoryRepository.findByTypeAndUserId(type, currentUser.getId());
+        return categories.stream().map(categoryMapper::toDto).toList();
+    }
+
+    public CategoryDto updateCategory(UUID id, CategoryDto request) {
+        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var existingCategory = categoryRepository.findByIdAndUserId(id, currentUser.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Category with id " + id + " not found")
+        );
+        categoryMapper.updateCategory(existingCategory, request);
+        var savedCategory = categoryRepository.save(existingCategory);
+        return categoryMapper.toDto(savedCategory);
+    }
+
+    public void deleteCategory(UUID id) {
+        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var existingCategory = categoryRepository.findByIdAndUserId(id, currentUser.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Category with id " + id + " not found")
+        );
+        categoryRepository.delete(existingCategory);
     }
 }
