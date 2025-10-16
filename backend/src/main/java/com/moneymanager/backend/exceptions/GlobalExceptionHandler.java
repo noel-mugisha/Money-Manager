@@ -69,4 +69,11 @@ public class GlobalExceptionHandler {
     ) {
         return getErrorResponse(HttpStatus.UNAUTHORIZED, exception);
     }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> resourceAlreadyExists(
+            ResourceAlreadyExistsException exception
+    ) {
+        return getErrorResponse(HttpStatus.CONFLICT, exception);
+    }
 }
