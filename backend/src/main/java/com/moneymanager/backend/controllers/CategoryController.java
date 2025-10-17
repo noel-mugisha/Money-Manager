@@ -23,7 +23,7 @@ public class CategoryController {
             UriComponentsBuilder uriBuilder
     ) {
         var categoryDto = categoryService.saveCategory(request);
-        var uri = uriBuilder.path("/{id}")
+        var uri = uriBuilder.path("/categories/{id}")
                 .buildAndExpand(categoryDto.id()).toUri();
         return ResponseEntity.created(uri).body(categoryDto);
     }

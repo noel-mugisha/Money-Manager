@@ -5,7 +5,7 @@ import com.moneymanager.backend.exceptions.ResourceAlreadyExistsException;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.CategoryMapper;
 import com.moneymanager.backend.repositories.CategoryRepository;
-import com.moneymanager.backend.utils.AuthenticationFacadeImpl;
+import com.moneymanager.backend.utils.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,10 @@ import java.util.UUID;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final AuthenticationFacadeImpl authenticationFacadeImpl;
+    private final AuthenticationFacade authenticationFacade;
 
     public CategoryDto saveCategory(CategoryDto request) {
-        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var currentUser = authenticationFacade.getCurrentUser();
         // check if the category already exists for the user
         if (categoryRepository.existsByNameAndUserId(request.name(), currentUser.getId()))
             throw new ResourceAlreadyExistsException("Category with name " + request.name() + " already exists");
@@ -33,19 +33,19 @@ public class CategoryService {
     }
 
     public List<CategoryDto> getCategoriesForCurrentUser() {
-        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var currentUser = authenticationFacade.getCurrentUser();
         var categories = categoryRepository.findByUserId(currentUser.getId());
         return categories.stream().map(categoryMapper::toDto).toList();
     }
 
     public List<CategoryDto> getCategoriesByType(String type) {
-        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var currentUser = authenticationFacade.getCurrentUser();
         var categories = categoryRepository.findByTypeAndUserId(type, currentUser.getId());
         return categories.stream().map(categoryMapper::toDto).toList();
     }
 
     public CategoryDto updateCategory(UUID id, CategoryDto request) {
-        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var currentUser = authenticationFacade.getCurrentUser();
         var existingCategory = categoryRepository.findByIdAndUserId(id, currentUser.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Category with id " + id + " not found")
         );
@@ -55,7 +55,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(UUID id) {
-        var currentUser = authenticationFacadeImpl.getCurrentUser();
+        var currentUser = authenticationFacade.getCurrentUser();
         var existingCategory = categoryRepository.findByIdAndUserId(id, currentUser.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Category with id " + id + " not found")
         );

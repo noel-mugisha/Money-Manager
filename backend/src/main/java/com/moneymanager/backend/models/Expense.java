@@ -48,4 +48,9 @@ public class Expense {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    public void addDate() {
+        this.date = LocalDate.now();
+    }
+
 }

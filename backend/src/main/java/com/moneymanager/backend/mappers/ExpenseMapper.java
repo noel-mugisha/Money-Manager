@@ -16,7 +16,6 @@ public interface ExpenseMapper {
     @Mapping(target = "categoryId", source = "category.id")
     ExpenseDto toDto(Expense expense);
 
-    @Mapping(target = "category.id", source = "categoryId")
     Expense toEntity(ExpenseDto expenseDto);
 
     void updateExpense(@MappingTarget Expense expense, ExpenseDto expenseDto);

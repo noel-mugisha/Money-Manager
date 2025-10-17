@@ -16,7 +16,6 @@ public interface IncomeMapper {
     @Mapping(target = "categoryId", source = "category.id")
     IncomeDto toDto(Income income);
 
-    @Mapping(target = "category.id", source = "categoryId")
     Income toEntity(IncomeDto incomeDto);
 
     void updateIncome(@MappingTarget Income income, IncomeDto incomeDto);
