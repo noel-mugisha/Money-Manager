@@ -7,6 +7,7 @@ import com.moneymanager.backend.repositories.CategoryRepository;
 import com.moneymanager.backend.repositories.ExpenseRepository;
 import com.moneymanager.backend.utils.AuthenticationFacade;
 import com.moneymanager.backend.utils.BaseTransactionService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -70,5 +71,17 @@ public class ExpenseService extends BaseTransactionService {
         BigDecimal totalExpenses = expenseRepository.findTotalExpensesByUserId(user.getId());
         // Check for null and return BigDecimal.ZERO if no expenses are found
         return totalExpenses != null ? totalExpenses : BigDecimal.ZERO;
+    }
+
+    public List<ExpenseDto> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort) {
+        var user = getCurrentUser();
+        var incomes = expenseRepository.findByUserIdAndDateBetweenAndNameContainingIgnoreCase(
+                user.getId(),
+                startDate,
+                endDate,
+                keyword,
+                sort
+        );
+        return incomes.stream().map(expenseMapper::toDto).toList();
     }
 }
