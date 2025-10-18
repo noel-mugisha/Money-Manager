@@ -67,6 +67,8 @@ public class ExpenseService extends BaseTransactionService {
 
     public BigDecimal getTotalExpenses() {
         var user = getCurrentUser();
-        return expenseRepository.findTotalExpensesByUserId(user.getId());
+        BigDecimal totalExpenses = expenseRepository.findTotalExpensesByUserId(user.getId());
+        // Check for null and return BigDecimal.ZERO if no expenses are found
+        return totalExpenses != null ? totalExpenses : BigDecimal.ZERO;
     }
 }

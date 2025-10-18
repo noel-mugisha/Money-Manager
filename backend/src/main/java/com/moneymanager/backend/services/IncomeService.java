@@ -64,8 +64,10 @@ public class IncomeService extends BaseTransactionService {
         return incomes.stream().map(incomeMapper::toDto).toList();
     }
 
-    public BigDecimal getTotalIncomes() {
+    public BigDecimal getTotalIncome() {
         var user = getCurrentUser();
-        return incomeRepository.findTotalIncomesByUserId(user.getId());
+        BigDecimal totalIncome = incomeRepository.findTotalIncomesByUserId(user.getId());
+        // Check for null and return BigDecimal.ZERO if no expenses are found
+        return totalIncome != null ? totalIncome : BigDecimal.ZERO;
     }
 }
