@@ -10,14 +10,12 @@ import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.UserMapper;
 import com.moneymanager.backend.models.User;
 import com.moneymanager.backend.repositories.UserRepository;
-import com.moneymanager.backend.security.UserPrincipal;
 import com.moneymanager.backend.security.jwt.JwtService;
 import com.moneymanager.backend.utils.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +31,8 @@ public class AuthService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    @Value("${app.frotend-url}")
-    private String frotendUrl;
+    @Value("${app.backend-url}")
+    private String backendUrl;
 
     @Transactional
     public User registerUser(RegisterRequest request) {
@@ -59,7 +57,7 @@ public class AuthService {
     // helper method to send activation email
     private void sendActivationEmail(String email, String activationToken) {
         String subject = "Activate your Money Manager account";
-        String activationUrl = frotendUrl + "/api/v1/auth/activate?token=" + activationToken;
+        String activationUrl = backendUrl + "/api/v1/auth/activate?token=" + activationToken;
         String body = "Click on the following link to activate your Money Manager account: " + activationUrl;
         emailService.sendEmail(email, subject, body);
     }

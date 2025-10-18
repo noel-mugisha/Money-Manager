@@ -84,4 +84,10 @@ public class ExpenseService extends BaseTransactionService {
         );
         return incomes.stream().map(expenseMapper::toDto).toList();
     }
+
+    // for notifications
+    public List<ExpenseDto> getExpensesForDate(UUID userId, LocalDate date) {
+        var list = expenseRepository.findByUserIdAndDate(userId, date);
+        return list.stream().map(expenseMapper::toDto).toList();
+    }
 }

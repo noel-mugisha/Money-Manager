@@ -83,4 +83,10 @@ public class IncomeService extends BaseTransactionService {
         );
         return incomes.stream().map(incomeMapper::toDto).toList();
     }
+
+    // for notifications
+    public List<IncomeDto> getIncomesForDate (UUID userId, LocalDate date) {
+        var list = incomeRepository.findByUserIdAndDate(userId, date);
+        return list.stream().map(incomeMapper::toDto).toList();
+    }
 }

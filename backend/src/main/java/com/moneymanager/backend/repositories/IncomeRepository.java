@@ -25,4 +25,6 @@ public interface IncomeRepository extends JpaRepository<Income, UUID> {
     List<Income> findByUserIdAndDateBetween(UUID userId, LocalDate startDate, LocalDate endDate);
 
     Boolean existsByIdAndUserId(UUID id, UUID userId);
+
+    List<Income> findByUserIdAndDate(UUID userId, LocalDate date);
 }

@@ -25,4 +25,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     List<Expense> findByUserIdAndDateBetween(UUID userId, LocalDate startDate, LocalDate endDate);
 
     Boolean existsByIdAndUserId(UUID id, UUID userId);
+
+    List<Expense> findByUserIdAndDate(UUID userId, LocalDate date);
 }
