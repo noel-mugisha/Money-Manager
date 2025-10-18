@@ -31,7 +31,7 @@ spring:
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
-  frotend-url: ${FRONTEND_URL}
+  frontend-url: ${FRONTEND_URL}
   backend-url: ${BACKEND_URL}
 
 
