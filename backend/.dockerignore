@@ -1,0 +1,55 @@
+# Language-specific ignores (Java)
+target/
+*.class
+
+# Development artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+dist/
+build/
+out/
+debug/
+*.log
+
+# Test files
+test/
+tests/
+
+# Version control
+.git/
+.gitignore
+.svn/
+.hg/
+
+# Environment and secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+config.local.*
+*.local.yml
+
+# Project-specific patterns
+docs/
+*.md
+README*
+Dockerfile*
+docker-compose*
+tmp/
+temp/
+*.tmp
+.local/
+local/
+
+# Other common ignores
+*.iml
+*.bak
+*.orig
+
+# Exclude backup and temporary files
+*~
+repomix-output.xml
