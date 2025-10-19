@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 repomix-output.xml
+# Environment files
+.env
