@@ -16,4 +16,6 @@ body {
     
     @apply hover:bg-[#2a2b63] transition-colors duration-200 cursor-pointer;
   }
+
+
 }
