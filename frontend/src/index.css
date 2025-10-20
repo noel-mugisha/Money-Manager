@@ -7,3 +7,13 @@ body {
   background-color: #fcfbfc;
   overflow-x: hidden;
 }
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#3b3c8f] text-white; 
+    
+    @apply rounded-lg shadow-xl;
+    
+    @apply hover:bg-[#2a2b63] transition-colors duration-200 cursor-pointer;
+  }
+}

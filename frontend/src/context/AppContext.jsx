@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react"; 
 
 const AppContext = createContext();
 
@@ -16,3 +16,5 @@ export const AppContextProvider = ({ children }) => {
         </AppContext.Provider>
     )
 }
+
+export default AppContext;

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseURL = import.meta.env.BACKEND_URL;
 
-const AxiosConfig = axios.create({
+const axiosConfig = axios.create({
     baseURL: baseURL,
     headers: {
         "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const AxiosConfig = axios.create({
 const excludeEndpoints = ["/auth/login", "/auth/register", "/auth/activate", "health"];
 
 // request interceptor
-AxiosConfig.interceptors.request.use((config) => {
+axiosConfig.interceptors.request.use((config) => {
     const shouldSkipToken = excludeEndpoints.some((endpoint) => config.url?.includes(endpoint));
 
     if (!shouldSkipToken) {
@@ -28,7 +28,7 @@ AxiosConfig.interceptors.request.use((config) => {
 });
 
 // response interceptor
-AxiosConfig.interceptors.response.use((response) => {
+axiosConfig.interceptors.response.use((response) => {
     return response;
 }, (error) => {
     if (error.response && error.response.status === 401) {
@@ -41,4 +41,3 @@ AxiosConfig.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
-export default AxiosConfig;
