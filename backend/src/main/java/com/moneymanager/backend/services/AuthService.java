@@ -80,7 +80,8 @@ public class AuthService {
         );
         var accessToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        return new AuthResponse(accessToken, refreshToken);
+        var userDto = userMapper.toDto(user);
+        return new AuthResponse(accessToken, refreshToken, userDto);
     }
 
     public AuthResponse refreshTokens(String refreshToken) {
@@ -88,6 +89,7 @@ public class AuthService {
         var user = userRepository.findById(id).orElseThrow();
         var accessToken = jwtService.generateAccessToken(user);
         var newRefreshToken = jwtService.generateRefreshToken(user);
-        return new AuthResponse(accessToken, newRefreshToken);
+        var userDto = userMapper.toDto(user);
+        return new AuthResponse(accessToken, newRefreshToken, userDto);
     }
 }
