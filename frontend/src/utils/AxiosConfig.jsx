@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.BACKEND_URL;
+const baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const axiosConfig = axios.create({
     baseURL: baseURL,
@@ -41,3 +41,4 @@ axiosConfig.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
+export default axiosConfig;

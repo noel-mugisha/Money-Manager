@@ -3,6 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import Input from "../components/Input";
 import { validateEmail, validatePassword } from "../utils/validation";
+import axiosConfig from "../utils/axiosConfig";
+import { API_ENDPOINTS } from "../utils/apiEndpoints";
+import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -12,6 +16,7 @@ const Signup = () => {
   const [passwordValidation, setPasswordValidation] = useState(
     validatePassword("")
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -23,24 +28,49 @@ const Signup = () => {
     }
   }, [password]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     if (!fullName.trim()) {
       setError("Please enter your full name");
+      setIsLoading(false);
       return;
     }
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
+      setIsLoading(false);
       return;
     }
     // Use the password validation state
     if (!passwordValidation.isValid) {
       setError("Your password does not meet all security requirements.");
+      setIsLoading(false);
       return;
     }
-    // Perform signup logic here
+
+    // signup API call
+    try {
+      const response = await axiosConfig.post(API_ENDPOINTS.REGISTER, {
+        fullName,
+        email,
+        password,
+      });
+      if (response.status === 201) {
+        toast.success("Account created successfully! Please login.");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.log("Signup Error:", err);
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message); 
+      } else {
+        setError("An unexpected error occurred during signup.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -164,11 +194,20 @@ const Signup = () => {
             <div className="flex justify-center">
               {" "}
               {/* New wrapper for centering */}
-              <button
-                className="btn-primary py-3 text-lg font-medium max-w-sm w-full"
+              <button disabled={isLoading}
+                // FIX: Added 'flex' to ensure items-center and justify-center work properly
+                className={`btn-primary py-3 text-lg font-medium max-w-sm w-full flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 type="submit"
               >
-                SIGN UP
+                {isLoading ? (
+                  <>
+                  {/* The size of the spinner is fine (w-5 h-5), it just needs to be centered */}
+                  <LoaderCircle className="animate-spin w-5 h-5"/>
+                  Signing Up...
+                  </>
+                ): (
+                  "SIGN UP"
+                )}
               </button>
             </div>
             <p className="text-sm text-slate-800 text-center mt-6">

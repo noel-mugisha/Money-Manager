@@ -14,5 +14,5 @@ public record RegisterRequest(
         String email,
         @NotBlank(message = "Password is required")
         @Password
-        String password
-) {}
+        String password,
+        String profileImageUrl) {}

@@ -56,7 +56,7 @@ const Login = () => {
                 className="btn-primary py-3 text-lg font-medium max-w-sm w-full"
                 type="submit"
               >
-                LOG IN
+                LOGIN
               </button>
             </div>
             <p className="text-sm text-slate-800 text-center mt-6">
