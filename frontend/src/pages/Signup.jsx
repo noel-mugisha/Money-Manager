@@ -7,6 +7,8 @@ import axiosConfig from "../utils/axiosConfig";
 import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import toast from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
+import ProfilePhotoSelector from "../components/ProfilePhotoSelector";
+import uploadProfileImage from "../utils/uploadProfile.js";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -17,10 +19,11 @@ const Signup = () => {
     validatePassword("")
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+
 
   const navigate = useNavigate();
   useEffect(() => {
-    // Only run if the user has started typing
     if (password.length > 0) {
       setPasswordValidation(validatePassword(password));
     } else {
@@ -30,6 +33,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let profileImageUrl = "";
     setError(null);
     setIsLoading(true);
 
@@ -52,10 +56,16 @@ const Signup = () => {
 
     // signup API call
     try {
+      // upload profile photo if exists
+      if (profilePhoto) {
+        const imageUrl = await uploadProfileImage(profilePhoto);
+        profileImageUrl = imageUrl || "";
+      }
       const response = await axiosConfig.post(API_ENDPOINTS.REGISTER, {
         fullName,
         email,
         password,
+        profileImageUrl
       });
       if (response.status === 201) {
         toast.success("Account created successfully! Please login.");
@@ -74,14 +84,14 @@ const Signup = () => {
   };
 
   return (
-    <div className="h-screen w-full flex items-center justify-center overflow-hidden">
+    <div className="h-screen w-full flex items-center justify-center py-10 overflow-y-auto">
       <img
         src={assets.login_bg}
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover filter blur-sm"
       />
       <div className="relative z-10 w-full max-w-lg px-6">
-        <div className="bg-white bg-opacity-95 backdrop-blur-sm shadow-2xl p-8 max-h-[90vh] overflow-y-auto rounded-lg">
+        <div className="bg-white bg-opacity-95 backdrop-blur-sm shadow-2xl p-8 rounded-lg">
           <h3 className="text-2xl font-semibold txt-black text-center mb-2">
             Create An Account
           </h3>
@@ -91,7 +101,7 @@ const Signup = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex justify-center mb-6">
-              {/* Profile Image */}
+              <ProfilePhotoSelector image={profilePhoto} setImage={setProfilePhoto}/>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
               <Input
