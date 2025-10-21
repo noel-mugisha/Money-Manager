@@ -47,7 +47,6 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-    // Use the password validation state
     if (!passwordValidation.isValid) {
       setError("Your password does not meet all security requirements.");
       setIsLoading(false);
@@ -129,7 +128,6 @@ const Signup = () => {
                   type="password"
                 />
 
-                {/* NEW: Password Strength Feedback */}
                 {password.length > 0 && (
                   <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                     {[
@@ -203,15 +201,12 @@ const Signup = () => {
 
             <div className="flex justify-center">
               {" "}
-              {/* New wrapper for centering */}
               <button disabled={isLoading}
-                // FIX: Added 'flex' to ensure items-center and justify-center work properly
                 className={`btn-primary py-3 text-lg font-medium max-w-sm w-full flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 type="submit"
               >
                 {isLoading ? (
                   <>
-                  {/* The size of the spinner is fine (w-5 h-5), it just needs to be centered */}
                   <LoaderCircle className="animate-spin w-5 h-5"/>
                   Signing Up...
                   </>
