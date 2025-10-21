@@ -44,7 +44,7 @@ const Login = () => {
 
         localStorage.setItem("token", accessToken);
         setUser(user); 
-        toast.success("Login successful! Redirecting to dashboard...");
+        toast.success("Login successful! ");
         navigate("/dashboard"); 
       }
     } catch (err) {

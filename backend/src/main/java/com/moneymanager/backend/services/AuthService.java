@@ -15,6 +15,7 @@ import com.moneymanager.backend.utils.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,9 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(AuthRequest request) {
-        var user = userRepository.findByEmail(request.email()).orElseThrow();
+        var user = userRepository.findByEmail(request.email()).orElseThrow(
+                () -> new BadCredentialsException("Invalid email or password")
+        );
         if (!user.getIsActive())
             throw new BadRequestException("Verify our email address!");
         authenticationManager.authenticate(

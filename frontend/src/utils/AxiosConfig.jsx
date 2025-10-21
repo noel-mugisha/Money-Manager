@@ -11,6 +11,7 @@ const axiosConfig = axios.create({
 });
 
 const excludeEndpoints = ["/auth/login", "/auth/register", "/auth/activate", "health"];
+const noRedirectEndpoints = ["/auth/login", "/auth/register"];
 
 // request interceptor
 axiosConfig.interceptors.request.use((config) => {
@@ -31,8 +32,12 @@ axiosConfig.interceptors.request.use((config) => {
 axiosConfig.interceptors.response.use((response) => {
     return response;
 }, (error) => {
+    const isNoRedirectEndpoint = noRedirectEndpoints.some((endpoint) => error.config.url?.includes(endpoint));
+
     if (error.response && error.response.status === 401) {
-        window.location.href = "/login";
+        if (!isNoRedirectEndpoint) {
+            window.location.href = "/login";
+        }
     } else if (error.response && error.response.status === 500) {
         console.error("Server Error:", error.response.data);
     } else if (error.code === 'ECONNABORTED') {
