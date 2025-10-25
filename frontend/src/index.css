@@ -17,5 +17,13 @@ body {
     @apply hover:bg-[#2a2b63] transition-colors duration-200 cursor-pointer;
   }
 
+  .add-btn {
+    @apply bg-green-100 text-green-600 font-medium; 
+    @apply py-2 px-4 rounded-lg;
+    @apply shadow-md; 
+    @apply transition-colors duration-200;
+    @apply hover:bg-green-200; 
+    @apply cursor-pointer; 
+  }
 
 }
