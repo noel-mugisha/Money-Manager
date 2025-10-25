@@ -1,6 +1,10 @@
+import Dashboard from "../components/Dashboard";
+
 const Expense = () => {
     return (
-        <div>Expense</div>
+        <Dashboard activeMenu="Expense">
+            Expense Page
+        </Dashboard>
     )
 }
 

@@ -76,4 +76,11 @@ public class GlobalExceptionHandler {
     ) {
         return getErrorResponse(HttpStatus.CONFLICT, exception);
     }
+
+    @ExceptionHandler(RequireLoginException.class)
+    public ResponseEntity<ApiErrorResponse> requireLogin(
+            RequireLoginException exception
+    ) {
+        return getErrorResponse(HttpStatus.UNAUTHORIZED, exception);
+    }
 }

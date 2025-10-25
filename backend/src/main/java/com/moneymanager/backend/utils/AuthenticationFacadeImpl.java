@@ -1,5 +1,6 @@
 package com.moneymanager.backend.utils;
 
+import com.moneymanager.backend.exceptions.RequireLoginException;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.models.User;
 import com.moneymanager.backend.repositories.UserRepository;
@@ -15,8 +16,12 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
     @Override
     public User getCurrentUser() {
-        var principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByEmail(principal.getUsername()).orElseThrow(
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal.equals("anonymousUser")) {
+            throw new RequireLoginException("Please login first");
+        }
+        var userDetails = (UserPrincipal) principal;
+        return userRepository.findByEmail(userDetails.getUsername()).orElseThrow(
                 () -> new ResourceNotFoundException("User not found!!")
         );
     }
