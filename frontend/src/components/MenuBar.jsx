@@ -1,15 +1,23 @@
 import { useContext, useRef, useState } from "react";
 import AppContext from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { Menu, User, X } from "lucide-react";
+import { LogOut, Menu, User, X } from "lucide-react";
 import { assets } from "../assets/assets";
 
 const MenuBar = () => {
   const [openSideMenu, setOpenSideMenu] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
   const dropDownRef = useRef(null);
-  const { user } = useContext(AppContext) || { user: {} }; 
+  const { user } = useContext(AppContext) || { user: {} };
+  const { clearUser } = useContext(AppContext);
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setShowDropDown(false);
+    clearUser();
+    navigate("/login");
+  }
 
   return (
     <div className="flex items-center justify-between gap-5 bg-white border border-b border-gray-200/50 backdrop-blur-[2px] py-4 px-4 sm:px-7 sticky top-0 z-30">
@@ -67,7 +75,14 @@ const MenuBar = () => {
             </div>
 
             {/* Drop Down options */}
-            <div className="py-1"></div>
+            <div className="py-1">
+              <button
+              onClick={handleLogout}
+               className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150">
+                <LogOut className="w-4 h-4 text-gray-500" />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
