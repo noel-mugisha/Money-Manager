@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import axiosConfig from "../utils/axiosConfig";
 import toast from "react-hot-toast";
+import Modal from "../components/Modal";
+import AddCategoryForm from "../components/AddCategoryForm";
 
 const Category = () => {
   useUser();
@@ -20,11 +22,12 @@ const Category = () => {
     setLoading(true);
     try {
       const response = await axiosConfig.get(API_ENDPOINTS.GET_ALL_CATEGORIES);
-      
-      setCategoryData(response.data); 
+
+      setCategoryData(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
-      const errorMessage = error.response?.data?.message || "Error fetching categories";
+      const errorMessage =
+        error.response?.data?.message || "Error fetching categories";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -32,8 +35,8 @@ const Category = () => {
   };
 
   useEffect(() => {
-    fetchCategories(); 
-  }, [])
+    fetchCategories();
+  }, []);
 
   return (
     <Dashboard activeMenu="Category">
@@ -41,9 +44,11 @@ const Category = () => {
         {/* Add button to add category */}
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-2xl font-semibold">All Categories</h2>
-          <button 
-          className="add-btn flex items-center gap-1">
-            <Plus size={15}/>
+          <button
+            onClick={() => setOpenAddCategoryModal(true)}
+            className="add-btn flex items-center gap-1"
+          >
+            <Plus size={15} />
             Add Category
           </button>
         </div>
@@ -52,6 +57,13 @@ const Category = () => {
         <CategoryList categories={categoryData} />
 
         {/* Adding category modal */}
+        <Modal
+          isOpen={openAddCategoryModal}
+          onClose={() => setOpenAddCategoryModal(false)}
+          title="Add Category"
+        >
+          <AddCategoryForm />
+        </Modal>
 
         {/* Updating category modal */}
       </div>
