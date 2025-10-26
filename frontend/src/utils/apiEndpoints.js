@@ -8,5 +8,6 @@ export const API_ENDPOINTS = {
     HEALTH: "/health",
     UPLOAD_IMAGE: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
     GET_USER_INFO: "/profile",
+    ADD_CATEGORY: "/categories",
     GET_ALL_CATEGORIES: "/categories",
 };
