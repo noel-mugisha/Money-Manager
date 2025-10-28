@@ -14,4 +14,5 @@ export const API_ENDPOINTS = {
     GET_ALL_INCOMES: "/incomes",
     CATEGORY_BY_TYPE: (categoryType) => `/categories?type=${categoryType}`,
     ADD_INCOME: "/incomes",
+    DELETE_INCOME: (incomeId) => `/incomes/${incomeId}`,
 };
