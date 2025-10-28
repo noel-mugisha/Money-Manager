@@ -11,4 +11,5 @@ export const API_ENDPOINTS = {
     ADD_CATEGORY: "/categories",
     GET_ALL_CATEGORIES: "/categories",
     UPDATE_CATEGORY: (categoryId) => `/categories/${categoryId}`,
+    GET_ALL_INCOMES: "/incomes",
 };

@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import axiosConfig from "../utils/axiosConfig";
 import toast from "react-hot-toast";
 import Modal from "../components/Modal";
-import AddCategoryForm from "../components/AddCategoryForm";
+import AddCategoryForm from "../components/AddCategoryForm"; 
 
 const Category = () => {
   useUser();

@@ -26,4 +26,20 @@ body {
     @apply cursor-pointer; 
   }
 
+  .card-btn {
+    @apply flex items-center justify-center gap-2;
+    @apply px-4 py-2;
+    @apply rounded-lg;
+    @apply border border-gray-200;
+    @apply text-gray-700;
+    @apply font-medium;
+    @apply bg-white;
+    @apply transition-all duration-200 ease-in-out;
+    @apply cursor-pointer; 
+    @apply hover:bg-purple-50;
+    @apply hover:border-purple-300;
+    @apply hover:text-purple-800;
+    @apply hover:shadow-sm;
+  }
+
 }
