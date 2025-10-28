@@ -20,7 +20,8 @@ const Input = ({
     type === "password" ? (showPassword ? "text" : "password") : type;
 
   // Common input/select classes for consistency
-  const commonInputClasses = "w-full outline-none border border-gray-300 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-blue-500 transition duration-150";
+  const commonInputClasses =
+    "w-full outline-none border border-gray-300 rounded-md text-gray-700 leading-tight focus:outline-none focus:border-blue-500 transition duration-150";
 
   return (
     <div className="mb-4">
@@ -28,7 +29,7 @@ const Input = ({
       <label className="text-sm font-medium text-gray-700 block mb-1">
         {label}
       </label>
-      
+
       <div className="relative">
         {isSelect ? (
           <>
@@ -36,10 +37,14 @@ const Input = ({
               value={value}
               onChange={(e) => onChange(e)}
               className={`${commonInputClasses} appearance-none bg-white py-2 px-3 pr-10 cursor-pointer`}
-              // Note: The py-2 should make it consistent with the input
             >
               {options.map((option) => (
-                <option key={option.value} value={option.value}>
+                <option
+                  key={option.value}
+                  value={option.value}
+                  disabled={option.disabled}
+                  hidden={option.isHidden}
+                >
                   {option.label}
                 </option>
               ))}
@@ -55,10 +60,12 @@ const Input = ({
             placeholder={placeholder}
             onChange={(e) => onChange(e)}
             value={value}
-            className={`${commonInputClasses} bg-transparent py-2 px-3 ${type === "password" ? "pr-10" : ""}`}
+            className={`${commonInputClasses} bg-transparent py-2 px-3 ${
+              type === "password" ? "pr-10" : ""
+            }`}
           />
         )}
-        
+
         {/* Password Toggle Button */}
         {type === "password" && (
           <span
@@ -66,15 +73,9 @@ const Input = ({
             onClick={toggleShowPassword}
           >
             {showPassword ? (
-              <Eye
-                size={20}
-                className="text-[#363ac8]"
-              />
+              <Eye size={20} className="text-[#363ac8]" />
             ) : (
-              <EyeOff
-                size={20}
-                className="text-[#1c208f]"
-              />
+              <EyeOff size={20} className="text-[#1c208f]" />
             )}
           </span>
         )}
