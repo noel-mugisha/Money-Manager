@@ -10,4 +10,5 @@ export const API_ENDPOINTS = {
     GET_USER_INFO: "/profile",
     ADD_CATEGORY: "/categories",
     GET_ALL_CATEGORIES: "/categories",
+    UPDATE_CATEGORY: (categoryId) => `/categories/${categoryId}`,
 };
