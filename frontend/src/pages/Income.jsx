@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import Modal from "../components/Modal";
 import AddIncomForm from "../components/AddIncomeForm";
 import DeleteAlert from "../components/DeleteAlert";
+import IncomeOverview from "../components/IncomeOverview";
 
 const Income = () => {
   useUser();
@@ -130,13 +131,17 @@ const Income = () => {
       <div className="my-5 mx-auto">
         <div className="grid grid-cols-1 gap-6">
           <div>
-            {/* overview for income with line chart*/}
             <button
               onClick={() => setOpenAddIncomeModal(true)}
               className="add-btn flex items-center gap-1"
             >
               <Plus size={15} className="text-lg" /> Add Income
             </button>
+
+            {/* overview for income with line chart*/}
+            <IncomeOverview
+            transactions={incomeData}
+            />
           </div>
           <IncomeList
             transactions={incomeData}

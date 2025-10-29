@@ -1,3 +1,4 @@
+import moment from "moment";
 
 export const addThousandsSeparator = (num) => {
     if (num == null || isNaN(num)) return "";
@@ -13,4 +14,30 @@ export const addThousandsSeparator = (num) => {
     );
     
     return fractionalPart ? `${formattedIntegerPart}.${fractionalPart}` : formattedIntegerPart;
+};
+
+export const prepareIncomeLineChartData = (transactions) => {
+    if (!transactions || transactions.length === 0) return [];
+
+    const groupedByDate = transactions.reduce((acc, transaction) => {
+        const dateKey = moment(transaction.date).format('YYYY-MM-DD');
+        
+        if (!acc[dateKey]) {
+            acc[dateKey] = {
+                date: dateKey,
+                totalAmount: 0,
+                items: [],
+                month: moment(transaction.date).format('Do MMM'),
+            };
+        }
+        acc[dateKey].totalAmount += Number(transaction.amount);
+        acc[dateKey].items.push(transaction);
+
+        return acc;
+    }, {});
+    const chartData = Object.values(groupedByDate).sort((a, b) => 
+        new Date(a.date) - new Date(b.date)
+    );
+
+    return chartData;
 };
