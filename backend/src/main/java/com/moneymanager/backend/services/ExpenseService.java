@@ -1,15 +1,21 @@
 package com.moneymanager.backend.services;
 
 import com.moneymanager.backend.dto.ExpenseDto;
+import com.moneymanager.backend.dto.response.MessageResponse;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.ExpenseMapper;
 import com.moneymanager.backend.repositories.CategoryRepository;
 import com.moneymanager.backend.repositories.ExpenseRepository;
 import com.moneymanager.backend.utils.AuthenticationFacade;
 import com.moneymanager.backend.utils.BaseTransactionService;
+import com.moneymanager.backend.utils.EmailService;
+import com.moneymanager.backend.utils.ExcelService;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,17 +25,21 @@ import java.util.UUID;
 public class ExpenseService extends BaseTransactionService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
+    private final ExcelService excelService;
+    private final EmailService emailService;
 
     public ExpenseService(
             AuthenticationFacade authenticationFacade,
             CategoryRepository categoryRepository,
             ExpenseRepository expenseRepository,
-            ExpenseMapper expenseMapper
-    ) {
+            ExpenseMapper expenseMapper,
+            ExcelService excelService, EmailService emailService) {
         super(authenticationFacade, categoryRepository);
 
         this.expenseRepository = expenseRepository;
         this.expenseMapper = expenseMapper;
+        this.excelService = excelService;
+        this.emailService = emailService;
     }
 
     public ExpenseDto saveExpense(ExpenseDto request) {
@@ -89,5 +99,20 @@ public class ExpenseService extends BaseTransactionService {
     public List<ExpenseDto> getExpensesForDate(UUID userId, LocalDate date) {
         var list = expenseRepository.findByUserIdAndDate(userId, date);
         return list.stream().map(expenseMapper::toDto).toList();
+    }
+
+    public MessageResponse emailExpenseDetails() throws IOException, MessagingException {
+        var user = getCurrentUser();
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            excelService.writeExpensesToExcel(baos, getMonthlyExpenses());
+            emailService.sendEmailWithAttachment(
+                    user.getEmail(),
+                    "Your Expense Excel Report",
+                    "Please find the attached expense report.",
+                    baos.toByteArray(),
+                    "Expense_details.xlsx"
+            );
+        }
+        return new MessageResponse("Report sent successfully, check your email!");
     }
 }

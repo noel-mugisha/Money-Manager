@@ -14,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface ExpenseMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "categoryId", source = "category.id")
+    @Mapping(target = "categoryName", source = "category.name")
     ExpenseDto toDto(Expense expense);
 
     Expense toEntity(ExpenseDto expenseDto);

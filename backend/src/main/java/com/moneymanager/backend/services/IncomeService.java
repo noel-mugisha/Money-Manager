@@ -1,15 +1,21 @@
 package com.moneymanager.backend.services;
 
 import com.moneymanager.backend.dto.IncomeDto;
+import com.moneymanager.backend.dto.response.MessageResponse;
 import com.moneymanager.backend.exceptions.ResourceNotFoundException;
 import com.moneymanager.backend.mappers.IncomeMapper;
 import com.moneymanager.backend.repositories.CategoryRepository;
 import com.moneymanager.backend.repositories.IncomeRepository;
 import com.moneymanager.backend.utils.AuthenticationFacade;
 import com.moneymanager.backend.utils.BaseTransactionService;
+import com.moneymanager.backend.utils.EmailService;
+import com.moneymanager.backend.utils.ExcelService;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,16 +25,20 @@ import java.util.UUID;
 public class IncomeService extends BaseTransactionService {
     private final IncomeRepository incomeRepository;
     private final IncomeMapper incomeMapper;
+    private final ExcelService excelService;
+    private final EmailService emailService;
 
     public IncomeService(
             AuthenticationFacade authenticationFacade,
             CategoryRepository categoryRepository,
             IncomeRepository incomeRepository,
-            IncomeMapper incomeMapper
+            IncomeMapper incomeMapper, ExcelService excelService, EmailService emailService
     ) {
         super(authenticationFacade, categoryRepository);
         this.incomeRepository = incomeRepository;
         this.incomeMapper = incomeMapper;
+        this.excelService = excelService;
+        this.emailService = emailService;
     }
 
     public IncomeDto saveIncome(IncomeDto request) {
@@ -88,5 +98,20 @@ public class IncomeService extends BaseTransactionService {
     public List<IncomeDto> getIncomesForDate (UUID userId, LocalDate date) {
         var list = incomeRepository.findByUserIdAndDate(userId, date);
         return list.stream().map(incomeMapper::toDto).toList();
+    }
+
+    public MessageResponse emailIncomeDetails() throws IOException, MessagingException {
+        var user = getCurrentUser();
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            excelService.writeIncomesToExcel(baos, getMonthlyIncomes());
+            emailService.sendEmailWithAttachment(
+                    user.getEmail(),
+                    "Your Income Excel Report",
+                    "Please find the attached income report.",
+                    baos.toByteArray(),
+                    "Income_details.xlsx"
+            );
+        }
+        return new MessageResponse("Report sent successfully, check your email!");
     }
 }

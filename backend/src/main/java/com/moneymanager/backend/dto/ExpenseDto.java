@@ -18,6 +18,7 @@ public record ExpenseDto(
         BigDecimal amount,
         @NotNull(message = "Category ID is required")
         UUID categoryId,
+        String categoryName,
         String icon,
         LocalDate date,
         UUID userId,
