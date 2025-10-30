@@ -50,7 +50,9 @@ public class Expense {
 
     @PrePersist
     public void addDate() {
-        this.date = LocalDate.now();
+        if (this.date == null) {
+            this.date = LocalDate.now();
+        }
     }
 
 }
