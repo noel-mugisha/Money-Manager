@@ -1,4 +1,6 @@
-import { Plus } from "lucide-react";
+// src/pages/Category.jsx
+
+import { Plus, LoaderCircle } from "lucide-react";
 import Dashboard from "../components/Dashboard";
 import { useUser } from "../hooks/useUser";
 import CategoryList from "../components/CategoryList";
@@ -7,22 +9,20 @@ import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import axiosConfig from "../utils/axiosConfig";
 import toast from "react-hot-toast";
 import Modal from "../components/Modal";
-import AddCategoryForm from "../components/AddCategoryForm"; 
+import AddCategoryForm from "../components/AddCategoryForm";
 
 const Category = () => {
   useUser();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [categoryData, setCategoryData] = useState([]);
   const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false);
   const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const fetchCategories = async () => {
-    if (loading) return;
     setLoading(true);
     try {
       const response = await axiosConfig.get(API_ENDPOINTS.GET_ALL_CATEGORIES);
-
       setCategoryData(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -36,6 +36,7 @@ const Category = () => {
 
   useEffect(() => {
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddCategory = async (category) => {
@@ -53,7 +54,7 @@ const Category = () => {
       if (response.status === 201) {
         toast.success("Category added successfully");
         setOpenAddCategoryModal(false);
-        fetchCategories();
+        fetchCategories(); // Re-fetch data
       }
     } catch (error) {
       console.error("Error adding category:", error);
@@ -69,8 +70,8 @@ const Category = () => {
     setOpenEditCategoryModal(true);
   };
 
-  const handleUpdateCategory = async(updatedCategory) => {
-    const {id, name, type, icon} = updatedCategory;
+  const handleUpdateCategory = async (updatedCategory) => {
+    const { id, name, type, icon } = updatedCategory;
     if (!name.trim()) {
       toast.error("Category name is required");
       return;
@@ -82,17 +83,20 @@ const Category = () => {
     }
 
     try {
-      const response = await axiosConfig.put(API_ENDPOINTS.UPDATE_CATEGORY(id), {
-        name,
-        type,
-        icon,
-      })
+      const response = await axiosConfig.put(
+        API_ENDPOINTS.UPDATE_CATEGORY(id),
+        {
+          name,
+          type,
+          icon,
+        }
+      );
 
       if (response.status === 200) {
         toast.success("Category updated successfully");
         setSelectedCategory(null);
         setOpenEditCategoryModal(false);
-        fetchCategories();
+        fetchCategories(); // Re-fetch data
       }
     } catch (error) {
       console.error("Error updating category:", error);
@@ -101,12 +105,12 @@ const Category = () => {
       toast.error(errorMessage);
       throw error;
     }
-  }
+  };
 
   return (
     <Dashboard activeMenu="Category">
       <div className="my-5 mx-auto">
-        {/* Add button to add category */}
+        {/* Header section */}
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-2xl font-semibold">All Categories</h2>
           <button
@@ -118,13 +122,22 @@ const Category = () => {
           </button>
         </div>
 
-        {/* Category list */}
-        <CategoryList
-          categories={categoryData}
-          onEditCategory={handleEditCategory}
-        />
+        {loading ? (
+          <div className="card p-4">
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+              <LoaderCircle className="w-8 h-8 animate-spin mb-3 text-purple-600" />
+              <p className="text-lg font-medium">Loading Categories...</p>
+              <p className="text-sm">Please wait a moment.</p>
+            </div>
+          </div>
+        ) : (
+          <CategoryList
+            categories={categoryData}
+            onEditCategory={handleEditCategory}
+          />
+        )}
 
-        {/* Adding category modal */}
+        {/* --- Modals --- */}
         <Modal
           isOpen={openAddCategoryModal}
           onClose={() => setOpenAddCategoryModal(false)}
@@ -133,7 +146,6 @@ const Category = () => {
           <AddCategoryForm onAddCategory={handleAddCategory} />
         </Modal>
 
-        {/* Updating category modal */}
         <Modal
           isOpen={openEditCategoryModal}
           onClose={() => {
@@ -142,10 +154,10 @@ const Category = () => {
           }}
           title="Update Category"
         >
-          <AddCategoryForm 
-          initialCategoryData={selectedCategory}
-          onAddCategory={handleUpdateCategory}
-          isEditing = {true}
+          <AddCategoryForm
+            initialCategoryData={selectedCategory}
+            onAddCategory={handleUpdateCategory}
+            isEditing={true}
           />
         </Modal>
       </div>
