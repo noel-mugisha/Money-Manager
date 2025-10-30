@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import axiosConfig from "../utils/axiosConfig";
 import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import IncomeList from "../components/IncomeList";
-import { Plus } from "lucide-react";
 import Modal from "../components/Modal";
 import AddIncomForm from "../components/AddIncomeForm";
 import DeleteAlert from "../components/DeleteAlert";
@@ -17,6 +16,7 @@ const Income = () => {
   const [incomeData, setIncomeData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [openAddIncomeModal, setOpenAddIncomeModal] = useState(false);
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
     show: false,
@@ -24,7 +24,7 @@ const Income = () => {
   });
 
   const fetchIncomeDetails = async () => {
-    if (loading) return;
+    if (loading && initialLoadComplete) return;
     setLoading(true);
     try {
       const response = await axiosConfig.get(API_ENDPOINTS.GET_ALL_INCOMES);
@@ -38,6 +38,7 @@ const Income = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+      setInitialLoadComplete(true);
     }
   };
 
@@ -99,6 +100,7 @@ const Income = () => {
       const errorMessage =
         error.response?.data?.message || "Error adding income";
       toast.error(errorMessage);
+      throw error;
     }
   };
 
@@ -118,34 +120,85 @@ const Income = () => {
       const errorMessage =
         error.response?.data?.message || "Error deleting income";
       toast.error(errorMessage);
+      throw error; 
     }
   };
+
+
+  const handleDownloadIncomeDetails = async() => {
+    try {
+      const response = await axiosConfig.get(API_ENDPOINTS.INCOME_EXCEL_DOWNLOAD, {
+        responseType: "blob",
+      });
+      let filename = "Income_details.xlsx";
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("Income details downloaded successfully"); 
+      
+      return true; 
+    } catch (error) {
+      console.error("Error downloading income details:", error);
+      const errorMessage =
+        error.response?.data?.message || "Error downloading income details";
+      toast.error(errorMessage);
+      throw error; 
+    }
+  }
+
+  const handleEmailIncomeDetails = async() => {
+    try {
+      const response = await axiosConfig.get(API_ENDPOINTS.SEND_INCOME_EMAIL);
+      if (response.status === 200) {
+        toast.success("Email sent successfully");
+      }
+      return true; 
+    } catch (error) {
+      console.error("Error sending income email:", error);
+      const errorMessage =
+        error.response?.data?.message || "Error sending income email";
+      toast.error(errorMessage);
+      throw error; 
+    }
+  }
 
   useEffect(() => {
     fetchIncomeDetails();
     fetchIncomeCategories();
   }, []);
 
+  if (!initialLoadComplete || loading) {
+    return (
+        <Dashboard activeMenu="Income">
+            <div className="my-5 mx-auto">
+                 <div className="text-center p-10 text-gray-500">
+                    <p>Loading income data...</p>
+                 </div>
+            </div>
+        </Dashboard>
+    )
+  }
+
   return (
     <Dashboard activeMenu="Income">
       <div className="my-5 mx-auto">
         <div className="grid grid-cols-1 gap-6">
           <div>
-            <button
-              onClick={() => setOpenAddIncomeModal(true)}
-              className="add-btn flex items-center gap-1"
-            >
-              <Plus size={15} className="text-lg" /> Add Income
-            </button>
-
-            {/* overview for income with line chart*/}
             <IncomeOverview
+            onAddIncome={() => setOpenAddIncomeModal(true)}
             transactions={incomeData}
             />
           </div>
           <IncomeList
             transactions={incomeData}
             onDelete={(id) => setOpenDeleteAlert({ show: true, data: id })}
+            onDownload={handleDownloadIncomeDetails}
+            onEmail={handleEmailIncomeDetails}
           />
           <Modal
             isOpen={openAddIncomeModal}
@@ -166,6 +219,7 @@ const Income = () => {
             <DeleteAlert
             content="Are you sure you want to delete this income?"
             onDelete={() => deleteIncome(openDeleteAlert.data)}
+            onClose={() => setOpenDeleteAlert({ show: false, data: null })}
             />
           </Modal>
         </div>
