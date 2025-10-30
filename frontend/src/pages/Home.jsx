@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from "../utils/apiEndpoints";
 import toast from "react-hot-toast";
 import RecentTransactions from "../components/RecentTransactions";
 import FinanceOverview from "../components/FinanceOverview";
+import Transactions from "../components/Transactions";
 
 const Home = () => {
     useUser();
@@ -78,8 +79,19 @@ const Home = () => {
                         totalExpense={dashboardData?.totalExpenses || 0}
                         />
                         {/* Expense transactions*/}
-
+                        <Transactions
+                        transactions={dashboardData?.recent5Expenses || []}
+                        onMore={() => navigate(`/expense`)}
+                        type="expense"
+                        title= "Recent Expenses"
+                        />
                         {/* Income transactions*/}
+                        <Transactions
+                        transactions={dashboardData?.recent5Incomes || []}
+                        onMore={() => navigate(`/income`)}
+                        type="income"
+                        title= "Recent Incomes"
+                        />
                     </div>
                 </div>
             </Dashboard>

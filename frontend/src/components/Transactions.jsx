@@ -1,13 +1,12 @@
 import { ArrowRight } from "lucide-react";
-import TransactionInfoCard from "./TransactionInfoCard";
 import moment from "moment";
+import TransactionInfoCard from "./TransactionInfoCard";
 
-const RecentTransactions = ({transactions, onMore}) => {
+const Transactions = ({transactions, onMore, type, title}) => {
     return (
         <div className="card">
             <div className="flex items-center justify-between">
-                <h4 className="text-lg font-sans font-semibold">Recent Transactions</h4>
-
+                <h5 className="text-lg font-semibold">{title}</h5>
                 <button className="card-btn" onClick={onMore}>
                     More <ArrowRight className= "text-base" size={15} />
                 </button>
@@ -21,7 +20,7 @@ const RecentTransactions = ({transactions, onMore}) => {
                         title={item.name}
                         date={moment(item.date).format('Do MMM, YYYY')}
                         amount={item.amount}
-                        type={item.type}
+                        type={type}
                         hideDeleteBtn
                     />
                 ))}
@@ -30,4 +29,4 @@ const RecentTransactions = ({transactions, onMore}) => {
     )
 }
 
-export default RecentTransactions;
+export default Transactions;
