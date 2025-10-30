@@ -24,5 +24,6 @@ export const API_ENDPOINTS = {
     DELETE_EXPENSE: (expenseId) => `/expenses/${expenseId}`,
     SEND_EXPENSE_EMAIL: "/expenses/email/send",
     EXPENSE_EXCEL_DOWNLOAD: "/expenses/excel/download",
-    APPLY_FILTERS: "/filter"
+    APPLY_FILTERS: "/filter",
+    DASHBOARD_DATA: "/dashboard",
 };
