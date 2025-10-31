@@ -35,7 +35,6 @@
   </table>
 </div>
 
-> **Note**: The images above are placeholders. Please follow the instructions to replace them with actual screenshots of your application.
 
 ## 🚀 About The Project
 
@@ -97,8 +96,8 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
+    https://github.com/noel-mugisha/Money-Manager.git
+    cd Money-Manager
     ```
 
 2.  **Backend Setup:**
@@ -129,4 +128,4 @@ For more information, feel free to reach out!
 
 **Noel Mugisha** - [noelmugish332@gmail.com](mailto:noelmugish332@gmail.com)
 
-Project Link: [https://github.com/your-username/your-repo-name](https://github.com/your-username/your-repo-name)
+Project Link: [https://github.com/noel-mugisha/Money-Manager](https://github.com/your-username/your-repo-name)
