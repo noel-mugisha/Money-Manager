@@ -1,10 +1,12 @@
 import logo from './logo.jpg';
 import login_bg from './login-bg.jpg';
 import { Coins, FunnelPlus, LayoutDashboard, List, Wallet } from 'lucide-react';
+import dashboard_preview from './dashboard-preview.png';
 
 export const assets = {
     logo,
-    login_bg
+    login_bg,
+    dashboard_preview
 }
 
 export const SIDE_BAR_DATA = [
