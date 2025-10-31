@@ -43,4 +43,18 @@ public class EmailService {
         helper.addAttachment(fileName, new ByteArrayResource(attachment));
         mailSender.send(message);
     }
+
+    public void sendHtmlEmail(String to, String subject, String htmlBody) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // true indicates multipart message
+
+        helper.setFrom(from);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlBody, true);
+
+        mailSender.send(message);
+        log.info("Sent HTML email to {}", to);
+    }
+
 }

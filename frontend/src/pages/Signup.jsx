@@ -67,7 +67,7 @@ const Signup = () => {
         profileImageUrl
       });
       if (response.status === 201) {
-        toast.success("Account created successfully! Please login.");
+        toast.success("Verify your email to activate your account!");
         navigate("/login");
       }
     } catch (err) {

@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import EmailVerification from "./pages/EmailVerification";
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/home" element={<LandingPage />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/verify-email" element={<EmailVerification />} />
 
           {/* Protected Dashboard Routes */}
           <Route path="/dashboard" element={<Home />} />

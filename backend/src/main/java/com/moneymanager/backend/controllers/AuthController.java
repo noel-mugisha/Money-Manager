@@ -10,9 +10,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 
@@ -22,6 +24,8 @@ import java.net.URI;
 public class AuthController {
     private final JwtConfig jwtConfig;
     private final AuthService authService;
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(
@@ -38,12 +42,17 @@ public class AuthController {
     }
 
     @GetMapping("/activate")
-    public ResponseEntity<MessageResponse> activateAccount(
-            @RequestParam String token
-    ) {
-        authService.activateAccount(token);
-        var message = new MessageResponse("Account activated successfully, You can now Login!");
-        return ResponseEntity.ok(message);
+    public RedirectView activateAccount(@RequestParam String token) {
+        RedirectView redirectView = new RedirectView();
+        try {
+            authService.activateAccount(token);
+            // On success, redirect to the frontend with a success status
+            redirectView.setUrl(frontendUrl + "/verify-email?status=success");
+        } catch (Exception e) {
+            // On failure, redirect with an error status and a message
+            redirectView.setUrl(frontendUrl + "/verify-email?status=error&message=Invalid or expired token.");
+        }
+        return redirectView;
     }
 
     @PostMapping("/login")
