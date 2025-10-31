@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <a href="[YOUR_DEPLOYED_APP_LINK]" target="_blank">
+  <a href="https://money-manager-ws4y.vercel.app/" target="_blank">
     <img src="https://img.shields.io/badge/Visit-Production%20App-brightgreen?style=for-the-badge&logo=rocket" alt="Live Demo">
   </a>
 </p>
